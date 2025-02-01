@@ -2,8 +2,9 @@ import os
 from flask import Flask, render_template, request, redirect, url_for
 import sqlite3
 from twilio.rest import Client
+import csv
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='static', template_folder='templates')
 
 # 🔹 Configuração do Twilio (WhatsApp)
 TWILIO_SID = os.getenv("TWILIO_SID")
@@ -56,7 +57,7 @@ def confirmar():
 def admin():
     if request.method == 'POST':
         senha = request.form['senha']
-        if senha == 'sua_senha_segura':  # Substitua por uma senha segura
+        if senha == os.getenv("SENHA"):
             return redirect(url_for('lista_convidados'))
         else:
             return "Senha incorreta. Tente novamente.", 403

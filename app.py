@@ -1,4 +1,5 @@
 import os
+import json
 from flask import Flask, render_template, request
 import sqlite3
 import gspread
@@ -9,7 +10,9 @@ app = Flask(__name__)
 
 # 🔹 Configuração do Google Sheets
 SCOPES = ["https://www.googleapis.com/auth/spreadsheets"]
-CREDS = Credentials.from_service_account_file("credentials.json", scopes=SCOPES)
+with open("credentials.json") as f:
+    credentials_info = json.load(f)
+CREDS = Credentials.from_service_account_info(credentials_info, scopes=SCOPES)
 client_gsheet = gspread.authorize(CREDS)
 SHEET_ID = "1SeW6s83IoVm3Jqx_rBcEF779kHHWfZDRBrZrUsHeJws"
 sheet = client_gsheet.open_by_key(SHEET_ID).sheet1

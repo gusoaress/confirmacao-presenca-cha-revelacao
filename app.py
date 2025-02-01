@@ -10,7 +10,7 @@ app = Flask(__name__, static_folder='static', template_folder='templates')
 TWILIO_SID = os.getenv("TWILIO_SID")
 TWILIO_AUTH_TOKEN = os.getenv("TWILIO_AUTH_TOKEN")
 TWILIO_PHONE_NUMBER = os.getenv("TWILIO_PHONE_NUMBER")
-SEU_NUMERO = os.getenv("SEU_NUMERO")
+SEU_NUMERO = os.getenv("MY_NUMBER_TWILIO")
 
 client_twilio = Client(TWILIO_SID, TWILIO_AUTH_TOKEN)
 

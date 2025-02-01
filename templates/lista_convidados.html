@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Convidados</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(to bottom, rgb(255, 0, 144), rgb(37, 197, 255));
+            font-family: Arial, sans-serif;
+            text-align: center;
+            color: white;
+            padding: 20px;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 800px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .table-section {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 20px;
+            border-radius: 10px;
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            color: white;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #4CAF50;
+        }
+
+        tr:nth-child(even) {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        input, select, button {
+            display: block;
+            margin: 10px 0;
+            padding: 10px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Lista de Convidados</h1>
+        <div class="table-section">
+            <table>
+                <tr>
+                    <th>ID</th>
+                    <th>Nome</th>
+                    <th>Confirmação</th>
+                    <th>Ações</th>
+                </tr>
+                {% for convidado in convidados %}
+                <tr>
+                    <form action="/lista_convidados" method="POST">
+                        <td>{{ convidado[0] }}</td>
+                        <td><input type="text" name="nome" value="{{ convidado[1] }}"></td>
+                        <td>
+                            <select name="confirmacao">
+                                <option value="sim" {% if convidado[2] == 'sim' %}selected{% endif %}>Sim</option>
+                                <option value="nao" {% if convidado[2] == 'nao' %}selected{% endif %}>Não</option>
+                            </select>
+                        </td>
+                        <td>
+                            <input type="hidden" name="id" value="{{ convidado[0] }}">
+                            <button type="submit">Salvar</button>
+                        </td>
+                    </form>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+</body>
+</html>

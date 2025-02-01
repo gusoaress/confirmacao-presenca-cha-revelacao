@@ -1,21 +1,9 @@
 import os
-import json
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect, url_for
 import sqlite3
-import gspread
-from google.oauth2.service_account import Credentials
 from twilio.rest import Client
 
 app = Flask(__name__)
-
-# 🔹 Configuração do Google Sheets
-SCOPES = ["https://www.googleapis.com/auth/spreadsheets"]
-with open("credentials.json") as f:
-    credentials_info = json.load(f)
-CREDS = Credentials.from_service_account_info(credentials_info, scopes=SCOPES)
-client_gsheet = gspread.authorize(CREDS)
-SHEET_ID = "1SeW6s83IoVm3Jqx_rBcEF779kHHWfZDRBrZrUsHeJws"
-sheet = client_gsheet.open_by_key(SHEET_ID).sheet1
 
 # 🔹 Configuração do Twilio (WhatsApp)
 TWILIO_SID = os.getenv("TWILIO_SID")
@@ -57,14 +45,51 @@ def confirmar():
         cursor.execute("INSERT INTO convidados (nome, confirmacao) VALUES (?, ?)", (nome, confirmacao))
         conn.commit()
 
-    # 🔹 Adicionar ao Google Sheets
-    sheet.append_row([nome, confirmacao])
-
     # 🔹 Enviar Notificação por WhatsApp
     mensagem = f"{nome} {'CONFIRMOU' if confirmacao == 'sim' else 'NEGOU'} presença."
     client_twilio.messages.create(body=mensagem, from_=TWILIO_PHONE_NUMBER, to=SEU_NUMERO)
 
     return "Resposta registrada! Obrigado."
+
+# 🔹 Rota de Administração (Solicitação de Senha)
+@app.route('/admin', methods=['GET', 'POST'])
+def admin():
+    if request.method == 'POST':
+        senha = request.form['senha']
+        if senha == 'sua_senha_segura':  # Substitua por uma senha segura
+            return redirect(url_for('lista_convidados'))
+        else:
+            return "Senha incorreta. Tente novamente.", 403
+    return render_template('admin.html')
+
+# 🔹 Rota para Exibir e Editar Lista de Convidados
+@app.route('/lista_convidados', methods=['GET', 'POST'])
+def lista_convidados():
+    if request.method == 'POST':
+        convidado_id = request.form['id']
+        nome = request.form['nome']
+        confirmacao = request.form['confirmacao']
+        with sqlite3.connect("confirmados.db") as conn:
+            cursor = conn.cursor()
+            cursor.execute("UPDATE convidados SET nome = ?, confirmacao = ? WHERE id = ?", (nome, confirmacao, convidado_id))
+            conn.commit()
+    with sqlite3.connect("confirmados.db") as conn:
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM convidados")
+        convidados = cursor.fetchall()
+    return render_template('lista_convidados.html', convidados=convidados)
+
+# 🔹 Função para Exportar Dados para CSV
+def export_to_csv():
+    with sqlite3.connect("confirmados.db") as conn:
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM convidados")
+        rows = cursor.fetchall()
+
+    with open('confirmados.csv', 'w', newline='') as file:
+        writer = csv.writer(file)
+        writer.writerow(['ID', 'Nome', 'Confirmacao'])
+        writer.writerows(rows)
 
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))

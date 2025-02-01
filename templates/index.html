@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirmação de Presença</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(to bottom, rgb(255, 0, 144), rgb(37, 197, 255));
+            font-family: Arial, sans-serif;
+            text-align: center;
+            color: white;
+            padding: 20px;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 800px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .form-section {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 20px;
+            border-radius: 10px;
+            width: 100%;
+        }
+
+        img {
+            width: 100%;
+            max-width: 300px;
+            height: auto;
+            margin-bottom: 20px;
+        }
+
+        form {
+            flex: 1;
+            min-width: 250px;
+        }
+
+        .label-box {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 5px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+
+        input, select, button {
+            display: block;
+            margin: 10px 0;
+            padding: 10px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        .admin-section {
+            margin-top: 20px;
+        }
+
+        @media (min-width: 768px) {
+            body {
+                padding: 40px;
+            }
+
+            .form-section {
+                flex-direction: row;
+            }
+
+            img {
+                margin-bottom: 0;
+                margin-right: 20px;
+                width: 40%;
+            }
+
+            form {
+                width: 60%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Confirme sua presença</h1>
+        <div class="form-section">
+            <img src="../static/bears.jpg" alt="Convite">
+            <form action="/confirm" method="POST">
+                <div class="label-box">
+                    <label for="nome">Por favor, insira o(s) nome(s) de quem vai comparecer:</label>
+                </div>
+                <input type="text" id="nome" name="nome" required>
+                
+                <div class="label-box">
+                    <label for="confirmacao">Vai comemorar conosco?</label>
+                </div>
+                <select id="confirmacao" name="confirmacao" required>
+                    <option value="sim">Sim, conte comigo!</option>
+                    <option value="nao">Infelizmente não vou conseguir</option>
+                </select>
+                
+                <button type="submit">Enviar</button>
+            </form>
+        </div>
+        <div class="admin-section">
+            <button onclick="window.location.href='/admin'">Ver Lista de Convidados</button>
+        </div>
+    </div>
+</body>
+</html>

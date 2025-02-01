@@ -32,6 +32,7 @@ init_db()
 # 🔹 Rota Principal (Exibir Formulário)
 @app.route('/')
 def index():
+    app.logger.info("Acessando a rota principal")
     return render_template('index.html')
 
 # 🔹 Rota para Receber Respostas do Formulário
@@ -39,6 +40,7 @@ def index():
 def confirmar():
     nome = request.form['nome']
     confirmacao = request.form['confirmacao']
+    app.logger.info(f"Recebendo confirmação: {nome} - {confirmacao}")
 
     # 🔹 Salvar no Banco de Dados
     with sqlite3.connect("confirmados.db") as conn:
